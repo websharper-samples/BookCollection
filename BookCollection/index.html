@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${PageTitle}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>${PageTitle}</h1>
+    <div id="main" data-replace="Main" data-children-template="Main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">New item</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p><b>Title: </b><input data-var="Title" placeholder="Title" /></p>
+                            <p><b>Author: </b><input data-var="Author" placeholder="Author(s)" /></p>
+                            <p><b>Publish date: </b><input type="date" data-var="PublishDate" /></p>
+                            <p><b>ISBN: </b><input data-var="ISBN" placeholder="ISBN" /></p>
+                        </div>
+                        <div class="panel-footer">
+                            <button data-event-click="Add">Add</button>
+                            <button data-event-click="Clear">Clear</button>
+                            <span>$!{Message}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2>Current items: <button data-event-click="Refresh">Refresh</button></h2>
+            <div class="row" data-hole="ListContainer">
+                <div class="col-md-3" data-template="ListItem">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p><b>Title: </b>$!{Title}</p>
+                            <p><b>Author: </b>$!{Author}</p>
+                            <p><b>Publish date: </b>$!{PublishDate}</p>
+                            <p><b>ISBN: </b>$!{ISBN}</p>
+                        </div>
+                        <div class="panel-footer">
+                            <button data-event-click="Remove">Remove</button>
+                            <button data-event-click="Edit">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-template="EditListItem">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <p><b>Title: </b><input data-var="Title" placeholder="Title" /></p>
+                            <p><b>Author: </b><input data-var="Author" placeholder="Author(s)" /></p>
+                            <p><b>Publish date: </b><input type="date" data-var="PublishDate" /></p>
+                            <p><b>ISBN: </b><input data-var="ISBN" placeholder="ISBN" /></p>
+                        </div>
+                        <div class="panel-footer">
+                            <button data-event-click="Update">Update</button>
+                            <button data-event-click="Cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -9,16 +9,16 @@ WebSharper works both as a compiler, translating part of your C# code intended t
 a server-side component and framework for handling all kinds of web requests.
 This enables full type safety from the server-side storage to the client-side view.
 
-![Final application](images/finaltemplate.png)
+![Final application](images/finaltemplate.PNG)
 
 The full source code is available on [GitHub](https://github.com/websharper-samples/BookCollection).
 The `.md` [source](https://github.com/websharper-samples/BookCollection/blob/master/BookCollection.md) for this tutorial is also included, comments, questions and pull requests are welcome.
 
 ### Concepts explored:
 
-    * single page applications (SPA project)
-    * remote method calls
-    * WebSharper.UI.Next reactive variables and collections, templating
+* single page applications (SPA project)
+* remote method calls
+* WebSharper.UI.Next reactive variables and collections, templating
 
 ## Starting out
 
@@ -305,7 +305,7 @@ This allows us to expand the call to `Template.Index.ListItem.Doc` with specifyi
             message.Value = $"Book '{book.Title}' was already removed";
     }
 
-![Adding items](images/removebutton.png)
+![Adding items](images/removebutton.PNG)
 
 ## Updating an item on the server
 
@@ -421,7 +421,7 @@ until the object (element) holding the event handler is in memory.
 JavaScript also has garbage collection similarly to .NET, so the same considerations
 work for avoiding memory leaks.
 
-![Adding items](images/editing.png)
+![Adding items](images/editing.PNG)
 
 ## Summary
 

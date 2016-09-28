@@ -1,4 +1,4 @@
-BookCollection - a simple CRUD application.
+# BookCollection - a simple CRUD application.
 
 This is an introductory tutorial for WebSharper 4 in C#.
 

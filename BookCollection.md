@@ -71,10 +71,10 @@ Add `using WebSharper;` to the top and replace the empty class with this:
 This class will be shared by the server and client and used for communication.
 Remote method calls work like this, WebSharper does it all for you when you use the necessary `[Remote]` and `[JavaScript]` attributes:
 
-    * Client serializes the arguments to JSON format, and sends a custom request which specifies the remote method in a header entry.
-    * The `web.config` file specifies using the `WebSharper.Web.RpcModule` class as a http module. This will recognize the request, deserialize the JSON arguments into .NET classes, and call your method with these.
-    * Your `[Remote]` annotated method can return a `Task` or `Task<T>`, which are awaited, then the result is serialized back to JSON and sent to the client.
-    * Client converts the response back into JavaScript objects, and calls the continuation of the pending `async` operation.
+* Client serializes the arguments to JSON format, and sends a custom request which specifies the remote method in a header entry.
+* The `web.config` file specifies using the `WebSharper.Web.RpcModule` class as a http module. This will recognize the request, deserialize the JSON arguments into .NET classes, and call your method with these.
+* Your `[Remote]` annotated method can return a `Task` or `Task<T>`, which are awaited, then the result is serialized back to JSON and sent to the client.
+* Client converts the response back into JavaScript objects, and calls the continuation of the pending `async` operation.
 
 The end result is: simple method calls in your code is translated to type-safe communication.
 The only thing you have to be careful about is that server-side methods naturally do not have access to objects in the clients, only what are passed to them as arguments.

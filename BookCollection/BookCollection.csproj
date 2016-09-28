@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AF65E319-CF6F-49E5-BE2B-938D14D7A698}</ProjectGuid>
+    <ProjectGuid>{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <Name>BookCollection</Name>
-    <RootNamespace>BookCollection</RootNamespace>
-    <AssemblyName>BookCollection</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <WebSharperProject>Bundle</WebSharperProject>
+    <WebSharperBundleOutputDir>Content</WebSharperBundleOutputDir>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -20,41 +19,34 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <Name>BookCollection</Name>
+    <RootNamespace>BookCollection</RootNamespace>
+    <AssemblyName>BookCollection</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Web.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Book.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="Model.cs" />
     <Compile Include="Remoting.cs" />
-    <Compile Include="Server.cs" />
     <Content Include="index.html">
       <RunCustomToolOn>index.tt</RunCustomToolOn>
     </Content>
@@ -68,6 +60,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>index.tt</DependentUpon>
     </Compile>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -75,57 +70,51 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebSharper.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Collections.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Collections.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Control, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Control.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Control.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Core.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Core.JavaScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Core.JavaScript.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Core.JavaScript.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.InterfaceGenerator, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.InterfaceGenerator.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.InterfaceGenerator.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.JavaScript, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.JavaScript.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.JavaScript.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.JQuery, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.JQuery.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.JQuery.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Main, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Main.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Main.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Sitelets, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Sitelets.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Sitelets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.UI.Next, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
@@ -141,47 +130,64 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=dcd983dec8f76a71, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zafir.4.0.129.193-beta3\lib\net40\WebSharper.Web.dll</HintPath>
+      <HintPath>..\packages\Zafir.4.0.131.14-beta3\lib\net40\WebSharper.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\FSharp.Core.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\Mono.Cecil.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\Mono.Cecil.Mdb.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\Mono.Cecil.Pdb.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.Compiler.CSharp.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.Compiler.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.Core.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.Core.JavaScript.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.CSharp.Analyzer.dll" />
-    <Analyzer Include="..\packages\Zafir.CSharp.4.0.129.193-beta3\tools\WebSharper.InterfaceGenerator.dll" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\FSharp.Core.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\Mono.Cecil.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\Mono.Cecil.Mdb.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\Mono.Cecil.Pdb.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.Compiler.CSharp.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.Compiler.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.Core.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.Core.JavaScript.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.CSharp.Analyzer.dll" />
+    <Analyzer Include="..\packages\Zafir.CSharp.4.0.131.14-beta3\tools\WebSharper.InterfaceGenerator.dll" />
+  </ItemGroup>
   <Target Name="IncludeContent" BeforeTargets="Compile">
     <ItemGroup>
-      <Content Include="Content/**/*.*" />
-      <Content Include="Scripts/**/*.*" />
+      <Content Include="Content/*.*" />
     </ItemGroup>
   </Target>
+  <!-- Web targets -->
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>4856</DevelopmentServerPort>
+          <DevelopmentServerPort>11739</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:4856/</IISUrl>
+          <IISUrl>http://localhost:11739/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -191,13 +197,13 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\Zafir.CSharp.4.0.129.193-beta3\build\Zafir.CSharp.targets" Condition="Exists('..\packages\Zafir.CSharp.4.0.129.193-beta3\build\Zafir.CSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Zafir.CSharp.4.0.129.193-beta3\build\Zafir.CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zafir.CSharp.4.0.129.193-beta3\build\Zafir.CSharp.targets'))" />
     <Error Condition="!Exists('..\packages\Zafir.UI.Next.4.0.69.111-beta3\build\Zafir.UI.Next.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zafir.UI.Next.4.0.69.111-beta3\build\Zafir.UI.Next.targets'))" />
+    <Error Condition="!Exists('..\packages\Zafir.CSharp.4.0.131.14-beta3\build\Zafir.CSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zafir.CSharp.4.0.131.14-beta3\build\Zafir.CSharp.targets'))" />
   </Target>
   <Import Project="..\packages\Zafir.UI.Next.4.0.69.111-beta3\build\Zafir.UI.Next.targets" Condition="Exists('..\packages\Zafir.UI.Next.4.0.69.111-beta3\build\Zafir.UI.Next.targets')" />
+  <Import Project="..\packages\Zafir.CSharp.4.0.131.14-beta3\build\Zafir.CSharp.targets" Condition="Exists('..\packages\Zafir.CSharp.4.0.131.14-beta3\build\Zafir.CSharp.targets')" />
 </Project>

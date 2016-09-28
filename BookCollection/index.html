@@ -1,16 +1,17 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>BookCollection</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${PageTitle}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="Content/BookCollection.css" />
+    <script type="text/javascript" src="Content/BookCollection.head.js"></script>
 </head>
 <body>
-    <h1>${PageTitle}</h1>
     <div id="main" data-replace="Main" data-children-template="Main">
-        <div class="container-fluid">
+        <div class="container-fluid" style="margin-top: 10px">
             <div class="row">
                 <div class="col-md-6">
                     <div class="panel panel-default">
@@ -25,7 +26,6 @@
                         </div>
                         <div class="panel-footer">
                             <button data-event-click="Add">Add</button>
-                            <button data-event-click="Clear">Clear</button>
                             <span>$!{Message}</span>
                         </div>
                     </div>
@@ -64,5 +64,6 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="Content/BookCollection.js"></script>
 </body>
 </html>

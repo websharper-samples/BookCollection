@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +9,8 @@ using WebSharper;
 
 namespace BookCollection
 {
-    //public class MyRemotingProvider : WebSharper.Remoting.AjaxRemotingProvider("localhost") { }
-
-    //[RemotingProvider(typeof(MyRemotingProvider))]
     public static class Remoting
     {
-        static int nextId = 1;
         static ConcurrentDictionary<int, Book> store =
             new ConcurrentDictionary<int, Book>()
             {
@@ -30,6 +26,8 @@ namespace BookCollection
         {
             return Task.FromResult(store.Values.ToArray());
         }
+
+        static int nextId;
 
         [Remote]
         public static Task<int> InsertBook(Book book)
@@ -58,5 +56,6 @@ namespace BookCollection
             else
                 return Task.FromResult(false);
         }
+
     }
 }

@@ -4,7 +4,7 @@ A C# sample for a client-server web application project using [WebSharper 4 beta
 
 It allows editing a list of book details which are persisted in server memory after every change.
 
-Tutorial upcoming.
+[Tutorial article is here](BookCollection.md).
 
 ## Build
 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookCollection", "BookCollection\BookCollection.csproj", "{AF65E319-CF6F-49E5-BE2B-938D14D7A698}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookCollection", "BookCollection\BookCollection.csproj", "{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AF65E319-CF6F-49E5-BE2B-938D14D7A698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF65E319-CF6F-49E5-BE2B-938D14D7A698}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF65E319-CF6F-49E5-BE2B-938D14D7A698}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF65E319-CF6F-49E5-BE2B-938D14D7A698}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28E25AFB-4F33-4C62-B7E9-CC2D944168AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

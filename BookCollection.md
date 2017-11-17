@@ -22,12 +22,9 @@ The `.md` [source](https://github.com/websharper-samples/BookCollection/blob/mas
 
 ## Starting out
 
-If you are using Visual Studio, download and install the [WebSharper 4 for C# vsix](http://websharper.com/Zafir.CSharp.vsix).
+If you are using Visual Studio, download and install the [WebSharper 4 vsix](http://websharper.com/downloads).
 
-Installing the [AutoRunCustomTool](https://visualstudiogallery.msdn.microsoft.com/ecb123bf-44bb-4ae3-91ee-a08fc1b9770e) extension is recommended which can run a custom tool on every change of a file.
-In our case, we will have a html file which we can access safely through auto-generated code.
-
-Create a new project with the template "UI.Next Single-Page Application With Templating" (under the section "Zafir", the codename for WebSharper 4 beta) named "BookCollection".
+Create a new project with the template "WebSharper 4 Single-Page Application" (under the sections "CSharp/WebSharper") named "BookCollection".
 This project will contain a short sample application for adding new names to a list.
 It is entirely client-side, the only code file `Client.fs` contains a single class annotated with the [JavaScript] attribute.
 This code is translated to JavaScript by the WebSharper compiler.

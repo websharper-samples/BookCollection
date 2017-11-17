@@ -25,12 +25,12 @@ namespace BookCollection
 
         static WebSharper.UI.Next.Doc DisplayBookDoc(Book book)
         {
-            return Template.Index.ListItem.Doc(
-                Title: View.Const(book.Title),
-                Author: View.Const(book.Author),
-                PublishDate: View.Const(DateToString(book.PublishDate)),
-                ISBN: View.Const(book.ISBN),
-                Remove: async (el, ev) =>
+            return new Template.Index.ListItem()
+                .Title(book.Title)
+                .Author(book.Author)
+                .PublishDate(DateToString(book.PublishDate))
+                .ISBN(book.ISBN)
+                .Remove(async (el, ev) =>
                 {
                     Message.Value = $"Removing book '{book.Title}'";
                     var res = await Remoting.DeleteBook(book.BookId);
@@ -39,13 +39,13 @@ namespace BookCollection
                         Message.Value = $"Removed book '{book.Title}'";
                     else
                         Message.Value = $"Book '{book.Title}' was already removed";
-                },
-                Edit: (el, ev) =>
+                })
+                .Edit((el, ev) =>
                 {
                     book.IsEdited = true;
                     Books.Add(book);
-                }
-            );
+                })
+                .Doc();
         }
 
         static WebSharper.UI.Next.Doc EditBookDoc(Book book)
@@ -54,12 +54,12 @@ namespace BookCollection
             var editAuthor = Var.Create(book.Author);
             var editPublishDate = Var.Create(DateToString(book.PublishDate));
             var editISBN = Var.Create(book.ISBN);
-            return Template.Index.EditListItem.Doc(
-                Title: editTitle,
-                Author: editAuthor,
-                PublishDate: editPublishDate,
-                ISBN: editISBN,
-                Update: async (el, ev) =>
+            return new Template.Index.EditListItem()
+                .Title(editTitle)
+                .Author(editAuthor)
+                .PublishDate(editPublishDate)
+                .ISBN(editISBN)
+                .Update(async (el, ev) =>
                 {
                     book.Title = editTitle.Value;
                     book.Author = editAuthor.Value;
@@ -77,13 +77,13 @@ namespace BookCollection
                         Books.Remove(book);
                         Message.Value = $"Book '{book.Title}' has not been found, removed";
                     }
-                },
-                Cancel: (el, ev) =>
+                })
+                .Cancel((el, ev) =>
                 {
                     book.IsEdited = false;
                     Books.Add(book);
-                }
-            );
+                })
+                .Doc();
         }
 
         [SPAEntryPoint]
@@ -95,21 +95,22 @@ namespace BookCollection
             var newAuthor = Var.Create("");
             var newPublishDate = Var.Create(DateToString(DateTime.Now));
             var newISBN = Var.Create("");
-            Template.Index.Main.Doc(
-                ListContainer:
+            new Template.Index.MainTemplate()
+                .ListContainer(
                     Books.View.DocSeqCached((Book book) =>
                     {
                         if (book.IsEdited)
                             return EditBookDoc(book);
                         else
                             return DisplayBookDoc(book);
-                    }),
-                Title: newTitle,
-                Author: newAuthor,
-                PublishDate: newPublishDate,
-                ISBN: newISBN,
-                Message: Message.View,
-                Add: async (el, ev) =>
+                    })
+                )
+                .Title(newTitle)
+                .Author(newAuthor)
+                .PublishDate(newPublishDate)
+                .ISBN(newISBN)
+                .Message(Message.View)
+                .Add(async (el, ev) =>
                 {
                     var publishDate = DateTime.Parse(newPublishDate.Value);
                     var book = new Book(newTitle.Value, newAuthor.Value, publishDate, newISBN.Value);
@@ -119,12 +120,13 @@ namespace BookCollection
                     Books.Add(book);
                     newTitle.Value = newAuthor.Value = newISBN.Value = "";
                     newPublishDate.Value = DateToString(DateTime.Now);
-                },
-                Refresh: async (el, ev) => {
+                })
+                .Refresh(async (el, ev) => {
                     await RefreshList();
                     Message.Value = "Collection updated";
-                }
-            ).RunById("main");
+                })
+                .Doc()
+            .RunById("main");
         }
     }
 }

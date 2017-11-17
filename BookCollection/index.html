@@ -10,7 +10,7 @@
     <script type="text/javascript" src="Content/BookCollection.head.js"></script>
 </head>
 <body>
-    <div id="main" data-replace="Main" data-children-template="Main">
+    <div id="main" ws-replace="Main" ws-children-template="MainTemplate">
         <div class="container-fluid" style="margin-top: 10px">
             <div class="row">
                 <div class="col-md-6">
@@ -19,45 +19,45 @@
                             <h3 class="panel-title">New item</h3>
                         </div>
                         <div class="panel-body">
-                            <p><b>Title: </b><input data-var="Title" placeholder="Title" /></p>
-                            <p><b>Author: </b><input data-var="Author" placeholder="Author(s)" /></p>
-                            <p><b>Publish date: </b><input type="date" data-var="PublishDate" /></p>
-                            <p><b>ISBN: </b><input data-var="ISBN" placeholder="ISBN" /></p>
+                            <p><b>Title: </b><input ws-var="Title" placeholder="Title" /></p>
+                            <p><b>Author: </b><input ws-var="Author" placeholder="Author(s)" /></p>
+                            <p><b>Publish date: </b><input type="date" ws-var="PublishDate" /></p>
+                            <p><b>ISBN: </b><input ws-var="ISBN" placeholder="ISBN" /></p>
                         </div>
                         <div class="panel-footer">
-                            <button data-event-click="Add">Add</button>
-                            <span>$!{Message}</span>
+                            <button ws-onclick="Add">Add</button>
+                            <span>${Message}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <h2>Current items: <button data-event-click="Refresh">Refresh</button></h2>
-            <div class="row" data-hole="ListContainer">
-                <div class="col-md-3" data-template="ListItem">
+            <h2>Current items: <button ws-onclick="Refresh">Refresh</button></h2>
+            <div class="row" ws-hole="ListContainer">
+                <div class="col-md-3" ws-template="ListItem">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <p><b>Title: </b>$!{Title}</p>
-                            <p><b>Author: </b>$!{Author}</p>
-                            <p><b>Publish date: </b>$!{PublishDate}</p>
-                            <p><b>ISBN: </b>$!{ISBN}</p>
+                            <p><b>Title: </b>${Title}</p>
+                            <p><b>Author: </b>${Author}</p>
+                            <p><b>Publish date: </b>${PublishDate}</p>
+                            <p><b>ISBN: </b>${ISBN}</p>
                         </div>
                         <div class="panel-footer">
-                            <button data-event-click="Remove">Remove</button>
-                            <button data-event-click="Edit">Edit</button>
+                            <button ws-onclick="Remove">Remove</button>
+                            <button ws-onclick="Edit">Edit</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3" data-template="EditListItem">
+                <div class="col-md-3" ws-template="EditListItem">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <p><b>Title: </b><input data-var="Title" placeholder="Title" /></p>
-                            <p><b>Author: </b><input data-var="Author" placeholder="Author(s)" /></p>
-                            <p><b>Publish date: </b><input type="date" data-var="PublishDate" /></p>
-                            <p><b>ISBN: </b><input data-var="ISBN" placeholder="ISBN" /></p>
+                            <p><b>Title: </b><input ws-var="Title" placeholder="Title" /></p>
+                            <p><b>Author: </b><input ws-var="Author" placeholder="Author(s)" /></p>
+                            <p><b>Publish date: </b><input type="date" ws-var="PublishDate" /></p>
+                            <p><b>ISBN: </b><input ws-var="ISBN" placeholder="ISBN" /></p>
                         </div>
                         <div class="panel-footer">
-                            <button data-event-click="Update">Update</button>
-                            <button data-event-click="Cancel">Cancel</button>
+                            <button ws-onclick="Update">Update</button>
+                            <button ws-onclick="Cancel">Cancel</button>
                         </div>
                     </div>
                 </div>

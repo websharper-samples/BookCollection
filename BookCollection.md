@@ -137,34 +137,40 @@ Our collection can be visualized by using `Books.View.DocSeqCached`, which creat
 The `index.html` will work as a template collection, containing annotated parts which can be replicated dynamically and have reactive variables bind to them.
 Let's add a bare-bone template to the `index.html` file, replace the contents of `body` except the last `script` link with this:
 
-    <div id="main" data-children-template="Main">
-        <ul data-hole="ListContainer">
-            <li data-template="ListItem">Title: $!{Title}; Author: $!{Author}; Publish date: $!{PublishDate}; ISBN: $!{ISBN}</li>
+    <div id="main" ws-children-template="MainTemplate">
+        <ul ws-hole="ListContainer">
+            <li ws-template="ListItem">Title: ${Title}; Author: ${Author}; Publish date: ${PublishDate}; ISBN: ${ISBN}</li>
         </ul>
     </div>
 
-If you save this file, the code generator runs and now you can access methods constructing the `Main` and `ListItem` parts from code as `Template.Index.Main.Doc` and `Template.Index.ListItem.Doc`.
-Note that in the html file, the `Main` teplate is defined by a `data-children-template` attribute, this means that the contents of the current element (one or more elements) will be constructed, while `ListItem` is defined by `data-template` and this constructs the current element it is defined on.
+If you save this file, the code generator runs and now you can access classes constructing the `MainTemplate` and `ListItem` parts from code as `Template.Index.MainTemplate` and `Template.Index.ListItem`.
+Note that in the html file, the `MainTemplate` template is defined by a `ws-children-template` attribute, this means that the contents of the current element (one or more elements) will be constructed, while `ListItem` is defined by `ws-template` and this constructs the current element it is defined on.
 
 Replace the contents of our `Client.Main` method with
 
     JQuery.Of("#main").Empty();
     Task.Run(RefreshList);
-    Template.Index.Main.Doc(
-        ListContainer:
+    new Template.Index.MainTemplate()
+        .ListContainer(
             Books.View.DocSeqCached(book =>
-                Template.Index.ListItem.Doc(
-                    Title: View.Const(book.Title),
-                    Author: View.Const(book.Author),
-                    PublishDate: View.Const(DateToString(book.PublishDate)),
-                    ISBN: View.Const(book.ISBN)
-                )
+                new Template.Index.ListItem()
+                    .Title(book.Title)
+                    .Author(book.Author)
+                    .PublishDate(DateToString(book.PublishDate))
+                    .ISBN(book.ISBN)
+                    .Doc()
             )
-    ).RunById("main");
+        )
+        .Doc()
+    .RunById("main");
 
 Clearing the `main` element is necessary because we use a single `index.html` for loading the application and the reactive templates.
 `RunById` creates the reactive content with our bindings, `RefreshList` is will finish after this, but once the initial list is downloaded
 it is appearing on the page.
+
+An auto-generated template class has methods with overloads for filling in its holes with static or reactive values.
+You can chain these methods and create the `UI.Next` representation of the DOM fragment by calling its `.Doc()` method.
+In the case of single-element templates, you also have an `.Elt()` method, which returns an `Elt` type, a wrapper for a single element which has some additional methods like imperative attribute setter, that the `Doc` class does not have.
 
 ![Initial list](images/showonly.png)
 
@@ -189,18 +195,18 @@ We are returning the `id` as the client will need to know it for update and remo
 
 ## UI for inserting a new item
 
-Let us add a couple new elements inside our `Main` template.
+Let us add a couple new elements inside our `MainTemplate` template.
 
     <div>
-        <input data-var="Title" placeholder="Title" />
-        <input data-var="Author" placeholder="Author" />
-        <input data-var="PublishDate" type="date" />
-        <input data-var="ISBN" placeholder="ISBN" />
-        <button data-event-click="Add">Add</button>
-        <div>$!{Message}</div>
+        <input ws-var="Title" placeholder="Title" />
+        <input ws-var="Author" placeholder="Author" />
+        <input ws-var="PublishDate" type="date" />
+        <input ws-var="ISBN" placeholder="ISBN" />
+        <button ws-onclick="Add">Add</button>
+        <div>${Message}</div>
     </div>
 
-Saving the file, we get errors on the `Template.Index.Main.Doc` call saying we are missing arguments.
+Saving the file, we get errors on the `Template.Index.MainTemplate` call saying we are missing arguments.
 The `Title` and other arguments defined by our template expect an `IRef<T>` object, the quickest way to create these is to make new reactive variables.
 
     var newTitle = Var.Create("");
@@ -209,23 +215,23 @@ The `Title` and other arguments defined by our template expect an `IRef<T>` obje
     var newISBN = Var.Create("");
     var message = Var.Create("");
 
-Now we can bind these by additional parameters in call to `Template.Index.Main.Doc`:
+Now we can bind these by additional parameters in call to `Template.Index.MainTemplate.Doc`:
 
-    Title: newTitle,
-    Author: newAuthor,
-    PublishDate: newPublishDate,
-    ISBN: newISBN,
-    Message: message.View
+    .Title(newTitle)
+    .Author(newAuthor)
+    .PublishDate(newPublishDate)
+    .ISBN(newISBN)
+    .Message(message.View)
 
 The `input` boxes are using two-way binding, so we are passing the `Var`-s themselves which are implementing `IRef<T>`.
 This means that a `Var` object works as a value cell, you can read or set its `.Value` property from code, and every change will update its views, in this case, the current contents of the input box.
 But also, changes of the input box will change the value of the `Var` cell.
 
-We have one more missing argument, for the event handler we have defined by having `data-event-click="Add"` on a button.
+We have one more missing argument, for the event handler we have defined by having `ws-onclick="Add"` on a button.
 The `Add` argument needs to be a delegate taking a DOM element and event as arguments.
 We do not use these, just want to react to the click now.
 
-    Add: async (el, ev) =>
+    .Add(async (el, ev) =>
     {
         var publishDate = DateTime.Parse(newPublishDate.Value);
         var book = new Book(newTitle.Value, newAuthor.Value, publishDate, newISBN.Value);
@@ -235,7 +241,7 @@ We do not use these, just want to react to the click now.
         Books.Add(book);
         newTitle.Value = newAuthor.Value = newISBN.Value = "";
         newPublishDate.Value = DateToString(DateTime.Now);
-    }
+    })
 
 Now you can add a new item to the list, and reloading the page shows it is indeed stored on the server-side.
 
@@ -256,14 +262,14 @@ Note that we only need to reset the underlying values, the views are taken care 
 
 Let us add another button inside the `main` template:
 
-    <button data-event-click="Refresh">Refresh</button>
+    <button ws-onclick="Refresh">Refresh</button>
 
 With the handler:
 
-    Refresh: async (el, ev) => {
+    .Refresh(async (el, ev) => {
         await RefreshList();
         message.Value = "Collection updated";
-    }
+    })
 
 Now if we open the page in multiple instances, modify items in one place,
 clicking this button in another page synchronizes current state from the server.
@@ -285,13 +291,13 @@ The item may be already removed by another client, so we could return if this wa
 Lets put a "Remove" button inside the `ListItem` template, so we have a button for every item in the list.
 So our `ListItem` looks like this now:
 
-    <li data-template="ListItem">Title: $!{Title}; Author: $!{Author}; Publish date: $!{PublishDate}; ISBN: $!{ISBN}
-        <button data-event-click="Remove">Remove</button>
+    <li ws-template="ListItem">Title: ${Title}; Author: ${Author}; Publish date: ${PublishDate}; ISBN: ${ISBN}
+        <button ws-onclick="Remove">Remove</button>
     </li>
 
 This allows us to expand the call to `Template.Index.ListItem.Doc` with specifying a delegate argument for `Remove`:
 
-    Remove: async (el, ev) =>
+    .Remove(async (el, ev) =>
     {
         message.Value = $"Removing book '{book.Title}'";
         var res = await Remoting.DeleteBook(book.BookId);
@@ -300,7 +306,7 @@ This allows us to expand the call to `Template.Index.ListItem.Doc` with specifyi
             message.Value = $"Removed book '{book.Title}'";
         else
             message.Value = $"Book '{book.Title}' was already removed";
-    }
+    })
 
 ![Adding items](images/removebutton.PNG)
 
@@ -327,17 +333,17 @@ We return a `bool` value signaling if the update was successful.
 The idea is to change the view of an item into editable input boxes on the click of an "Edit" button.
 Lets add the basic template for this, first a second button inside the `ListItem` template:
 
-    <button data-event-click="Edit">Edit</button>
+    <button ws-onclick="Edit">Edit</button>
 
 And now a new sub-template for an item in editing state:
 
-    <li data-template="EditListItem">
-        <input data-var="Title" placeholder="Title" />
-        <input data-var="Author" placeholder="Author" />
-        <input data-var="PublishDate" type="date" />
-        <input data-var="ISBN" placeholder="ISBN" />
-        <button data-event-click="Update">Update</button>
-        <button data-event-click="Cancel">Cancel</button>
+    <li ws-template="EditListItem">
+        <input ws-var="Title" placeholder="Title" />
+        <input ws-var="Author" placeholder="Author" />
+        <input ws-var="PublishDate" type="date" />
+        <input ws-var="ISBN" placeholder="ISBN" />
+        <button ws-onclick="Update">Update</button>
+        <button ws-onclick="Cancel">Cancel</button>
     </li>
 
 The challenge is to switch to representing an item using this template when clicking the "Edit" button.
@@ -352,11 +358,11 @@ The `NonSerialized` attribute marks that this value is not used for remoting.
 
 Since we added the `Edit` button, the call to `Template.Index.ListItem.Doc` is missing an argument:
 
-    Edit: (el, ev) =>
+    .Edit((el, ev) =>
     {
         book.IsEdited = true;
         Books.Add(book);
-    }
+    })
 
 This does nothing yet.
 But if we would just change a `bool` field on a `Book` object, `UI.Next` would have no way
@@ -374,12 +380,12 @@ to display the element in edit mode when needed:
             var editAuthor = Var.Create(book.Author);
             var f = Var.Create(DateToString(book.PublishDate));
             var editISBN = Var.Create(book.ISBN);
-            return Template.Index.EditListItem.Doc(
-                Title: editTitle,
-                Author: editAuthor,
-                PublishDate: editPublishDate,
-                ISBN: editISBN,
-                Update: async (el, ev) =>
+            return new emplate.Index.EditListItem()
+                .Title(editTitle)
+                .Author(editAuthor)
+                .PublishDate(editPublishDate)
+                .ISBN(editISBN)
+                .Update(async (el, ev) =>
                 {
                     book.Title = editTitle.Value;
                     book.Author = editAuthor.Value;
@@ -397,18 +403,18 @@ to display the element in edit mode when needed:
                         Books.Remove(book);
                         message.Value = $"Book '{book.Title}' has not been found, removed";
                     }
-                },
-                Cancel: (el, ev) =>
+                })
+                .Cancel((el, ev) =>
                 {
                     book.IsEdited = false;
                     Books.Add(book);
-                }
-            );
+                })
+                .Doc();
         }
         else
-            return Template.Index.ListItem.Doc(
+            return new Template.Index.ListItem()
                 // ... previous code
-            );
+                .Doc();
     }),
 
 A new set of `Var`s are needed as backing for the input fields.

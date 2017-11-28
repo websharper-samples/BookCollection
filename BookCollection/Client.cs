@@ -5,6 +5,7 @@ using WebSharper.JQuery;
 using WebSharper.UI.Next;
 using WebSharper.UI.Next.Client;
 using WebSharper.UI.Next.CSharp;
+using WebSharper.UI.Next.CSharp.Client;
 using static WebSharper.UI.Next.CSharp.Client.Html;
 
 namespace BookCollection
@@ -89,21 +90,18 @@ namespace BookCollection
         [SPAEntryPoint]
         public static void Main()
         {
-            JQuery.Of("#main").Empty();
             Task.Run(RefreshList);
             var newTitle = Var.Create("");
             var newAuthor = Var.Create("");
             var newPublishDate = Var.Create(DateToString(DateTime.Now));
             var newISBN = Var.Create("");
-            new Template.Index.MainTemplate()
+            new Template.Index.Main()
                 .ListContainer(
-                    Books.View.DocSeqCached((Book book) =>
-                    {
-                        if (book.IsEdited)
-                            return EditBookDoc(book);
-                        else
-                            return DisplayBookDoc(book);
-                    })
+                    Books.View.DocSeqCached((View<Book> bookView) =>
+                        bookView.Doc(book =>
+                            book.IsEdited ? EditBookDoc(book) : DisplayBookDoc(book)
+                        )
+                    )
                 )
                 .Title(newTitle)
                 .Author(newAuthor)

@@ -26,7 +26,7 @@ If you are using Visual Studio, download and install the [WebSharper 4 vsix](htt
 
 Create a new project with the template "WebSharper 4 Single-Page Application" (under the sections "CSharp/WebSharper") named "BookCollection".
 This project will contain a short sample application for adding new names to a list.
-It is entirely client-side, the only code file `Client.fs` contains a single class annotated with the [JavaScript] attribute.
+It is entirely client-side, the only code file `Client.cs` contains a single class annotated with the `[JavaScript]` attribute.
 This code is translated to JavaScript by the WebSharper compiler.
 It has a static `Main` method with the `[SPAEntryPoint]` attribute which causes it to run after page load in the browser.
 
@@ -40,7 +40,7 @@ The `index.html` file has a link to these compiler generated `.js` files and a `
 
 ## The data model
 
-Create a new code file for a class.
+Create a new code file calles `Book.cs` for a class.
 
 Add `using WebSharper;` to the top and replace the empty class with this:
 
@@ -80,11 +80,12 @@ Therefore it is needed that we have classes that represent the chunks of data we
 
 ## The server-side first step
 
-Let us create a new class file with a static class named `Remoting`.
+Let us create a new class file named `Remoting.cs` with a static class named `Remoting`.
 his will contain as static members all the server-side state and functionality.
 
 For simplicity, we are not using a database, just an in-memory collection:
 
+    // using System.Collections.Concurrent;
     static ConcurrentDictionary<int, Book> store =
         new ConcurrentDictionary<int, Book>()
         {
@@ -97,6 +98,8 @@ For simplicity, we are not using a database, just an in-memory collection:
 
 First we need a method for retrieving the state of the collection:
 
+    // using System.Threading.Tasks;
+    // using WebSharper;
     [Remote]
     public static Task<Book[]> GetBooks()
     {
@@ -115,16 +118,17 @@ so WebSharper remoting responds to the client immediately.
 
 # The client-side first step, visualizing a collection
 
-Let us create a new class file with a class named `Client` with the `[JavaScript]` attribute (add `using WebSharper;`).
-This will contain our client-side state and functionality.
+Let us delete the contents of the `Main` method inside the `App` class in `Client.cs`.
+This class will contain our client-side state and functionality.
 For storing a collection that is easily connected to a responsive view, the UI framework for WebSharper provides the `ListModel` class (in `WebSharper.UI.Next`).
 This is a dictionary too, for which we can define a key-generator function in the constructor for consistency:
 
-    ListModel<int, Book> Books = new ListModel<int, Book>(b => b.BookId);
+    static ListModel<int, Book> Books = new ListModel<int, Book>(b => b.BookId);
 
-Put this inside the `App` class of `Client.cs`. To download the current list from the server, an `async` method is preferred:
+Put this inside the `App` class of `Client.cs` as an initialized static field. To download the current list from the server, an `async` method is preferred:
 
-    async Task RefreshList()
+    // using System.Threading.Tasks;
+    static async Task RefreshList()
     {
         Books.Set(await Remoting.GetBooks());
     }
@@ -135,22 +139,25 @@ Every reactive variable and collection has a view, which is an interface through
 Our collection can be visualized by using `Books.View.DocSeqCached`, which creates DOM nodes for every item, and when the collection changes, keeps those for which the key has not been touched.
 
 The `index.html` will work as a template collection, containing annotated parts which can be replicated dynamically and have reactive variables bind to them.
-Let's add a bare-bone template to the `index.html` file, replace the contents of `body` except the last `script` link with this:
-
-    <div id="main" ws-children-template="MainTemplate">
+Let's add a bare-bone template to the `index.html` file, replace the contents of `body` except the last `script` link (be careful not to overwrite that) with this :
+    
+    <!-- We will replace this with the application body -->
+    <div id="main" /> 
+    
+    <!-- Templates to use via generated code -->
+    <div ws-children-template="Main">
         <ul ws-hole="ListContainer">
             <li ws-template="ListItem">Title: ${Title}; Author: ${Author}; Publish date: ${PublishDate}; ISBN: ${ISBN}</li>
         </ul>
     </div>
 
-If you save this file, the code generator runs and now you can access classes constructing the `MainTemplate` and `ListItem` parts from code as `Template.Index.MainTemplate` and `Template.Index.ListItem`.
-Note that in the html file, the `MainTemplate` template is defined by a `ws-children-template` attribute, this means that the contents of the current element (one or more elements) will be constructed, while `ListItem` is defined by `ws-template` and this constructs the current element it is defined on.
+If you save this file, the code generator runs and now you can access classes constructing the `Main` and `ListItem` parts from code as `Template.Index.Main` and `Template.Index.ListItem`.
+Note that in the html file, the `Main` template is defined by a `ws-children-template` attribute, this means that the contents of the current element (one or more elements) will be constructed, while `ListItem` is defined by `ws-template` and this constructs the current element it is defined on.
 
-Replace the contents of our `Client.Main` method with
+Insert this to our `Client.Main` method:
 
-    JQuery.Of("#main").Empty();
     Task.Run(RefreshList);
-    new Template.Index.MainTemplate()
+    new Template.Index.Main()
         .ListContainer(
             Books.View.DocSeqCached(book =>
                 new Template.Index.ListItem()
@@ -164,13 +171,23 @@ Replace the contents of our `Client.Main` method with
         .Doc()
     .RunById("main");
 
-Clearing the `main` element is necessary because we use a single `index.html` for loading the application and the reactive templates.
 `RunById` creates the reactive content with our bindings, `RefreshList` is will finish after this, but once the initial list is downloaded
 it is appearing on the page.
+
+We also need a helper method for date formatting:
+
+    // using System;
+    static string DateToString(DateTime date) =>
+        $"{date.Year}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
+
+WebSharper does not support date format strings and all format specifiers yet, so it is a custom method to yield us a `YYYY-MM-DD` formatted date in JavaScript.
+An easy way to test availability and behavior of .NET functionality is a C# snippet on [Try WebSharper](http://try.websharper.com/new-csharp).
 
 An auto-generated template class has methods with overloads for filling in its holes with static or reactive values.
 You can chain these methods and create the `UI.Next` representation of the DOM fragment by calling its `.Doc()` method.
 In the case of single-element templates, you also have an `.Elt()` method, which returns an `Elt` type, a wrapper for a single element which has some additional methods like imperative attribute setter, that the `Doc` class does not have.
+
+If you run the application now, you will see this:
 
 ![Initial list](images/showonly.png)
 
@@ -178,10 +195,11 @@ In the case of single-element templates, you also have an `.Elt()` method, which
 
 The server keeps the "official" state of the collection, if that changes, the clients can become outdated.
 We will introduce a refresh button and then an auto-refresh for this later.
-We have the `nextId` static field so that we can safely generate a unique key for a new item:
+We have the `nextId` static field so that we can safely generate a unique key for a new item, add this to the `Remoting` class:
 
     static int nextId;
 
+    // using System.Threading;
     [Remote]
     public static Task<int> InsertBook(Book book)
     {
@@ -195,7 +213,7 @@ We are returning the `id` as the client will need to know it for update and remo
 
 ## UI for inserting a new item
 
-Let us add a couple new elements inside our `MainTemplate` template.
+Let us add a couple new elements inside our `Main` template as first child.
 
     <div>
         <input ws-var="Title" placeholder="Title" />
@@ -206,8 +224,9 @@ Let us add a couple new elements inside our `MainTemplate` template.
         <div>${Message}</div>
     </div>
 
-Saving the file, we get errors on the `Template.Index.MainTemplate` call saying we are missing arguments.
-The `Title` and other arguments defined by our template expect an `IRef<T>` object, the quickest way to create these is to make new reactive variables.
+Running the application now, we see input boxes and a button, but they do nothing.
+But the code generator already did its job (if you have saved `index.html` or built the project), so the `Template.Index.Main` class is now having extra methods to bind the newly added inputs and button.
+The `Title` and other arguments defined by our template expect an `IRef<T>` object, the quickest way to create these is to make new reactive variables on top of the `Main` method.
 
     var newTitle = Var.Create("");
     var newAuthor = Var.Create("");
@@ -215,7 +234,7 @@ The `Title` and other arguments defined by our template expect an `IRef<T>` obje
     var newISBN = Var.Create("");
     var message = Var.Create("");
 
-Now we can bind these by additional parameters in call to `Template.Index.MainTemplate.Doc`:
+Now we can bind these by additional chained methods on `new Template.Index.Main()`, which we can add in any order to fill in holes of the template:
 
     .Title(newTitle)
     .Author(newAuthor)
@@ -226,6 +245,9 @@ Now we can bind these by additional parameters in call to `Template.Index.MainTe
 The `input` boxes are using two-way binding, so we are passing the `Var`-s themselves which are implementing `IRef<T>`.
 This means that a `Var` object works as a value cell, you can read or set its `.Value` property from code, and every change will update its views, in this case, the current contents of the input box.
 But also, changes of the input box will change the value of the `Var` cell.
+
+This chained method syntax allowing filling the holes with multiple types on many occasions, for example `Message` hole is just a display for a text, to which we can add a static string or a time-varying string, called `View<string>`.
+We do the latter now, using our `Var`'s `View` property which exposes the reactive variable as a `View<T>`.
 
 We have one more missing argument, for the event handler we have defined by having `ws-onclick="Add"` on a button.
 The `Add` argument needs to be a delegate taking a DOM element and event as arguments.
@@ -260,7 +282,7 @@ Note that we only need to reset the underlying values, the views are taken care 
 
 ## Refreshing the client-side state
 
-Let us add another button inside the `main` template:
+Let us add another button inside the `Main` template:
 
     <button ws-onclick="Refresh">Refresh</button>
 
@@ -295,7 +317,7 @@ So our `ListItem` looks like this now:
         <button ws-onclick="Remove">Remove</button>
     </li>
 
-This allows us to expand the call to `Template.Index.ListItem.Doc` with specifying a delegate argument for `Remove`:
+This allows us to expand our template hole filling calls by specifying a delegate argument for `Remove`:
 
     .Remove(async (el, ev) =>
     {
@@ -356,7 +378,7 @@ Lets do this by adding a new field to the `Book` class:
 
 The `NonSerialized` attribute marks that this value is not used for remoting.
 
-Since we added the `Edit` button, the call to `Template.Index.ListItem.Doc` is missing an argument:
+Since we added the `Edit` button to the HTML template, we can expand the instantiation of `new Template.Index.ListItem()` with:
 
     .Edit((el, ev) =>
     {
@@ -428,5 +450,5 @@ work for avoiding memory leaks.
 
 ## Summary
 
-You can find the entire project on [GitHub](https://github.com/websharper-samples/BookCollection) with an enhanced template.
+You can find the entire project on [GitHub](https://github.com/websharper-samples/BookCollection) with an enhanced template using `Bootstrap`.
 Client-side code is reorganized a bit, initializing item templates are separated into methods for readability.

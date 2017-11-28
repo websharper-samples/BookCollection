@@ -8,9 +8,19 @@
     <script type="text/javascript" src="Content/BookCollection.head.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        /* Don't show the not-yet-loaded templates */
+        [ws-template], [ws-children-template] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="main" ws-replace="Main" ws-children-template="MainTemplate">
+    <!-- We will replace this with the application body -->
+    <div id="main" /> 
+    
+    <!-- Templates to use via generated code -->
+    <div ws-children-template="Main">
         <div class="container-fluid" style="margin-top: 10px">
             <div class="row">
                 <div class="col-md-6">
@@ -64,6 +74,7 @@
             </div>
         </div>
     </div>
+
     <script type="text/javascript" src="Content/BookCollection.js"></script>
 </body>
 </html>

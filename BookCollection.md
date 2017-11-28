@@ -391,53 +391,64 @@ But if we would just change a `bool` field on a `Book` object, `UI.Next` would h
 to register this change. That's why we re-add the item to the list model, it has a unique key
 so it will not change the visible representation of the list but signal the change for that key.
 
-Now we can put an `if` statement inside the anonymous function passed to `Books.View.DocSeqCached`
+We are displaying the current state of the `Books` collection with `Books.View.DocSeqCached`, but that has different overloads and we were so far using the simplest one, taking a `Func<Book. Doc>`.
+This renders a single `Book` item once, and then keeps its rendering even if underlying value changes.
+We need to upgrade this to the one taking a `Func<View<Book>, Doc>`, where the change can be propagated.
+
+    Books.View.DocSeqCached((View<Book> bookView) =>
+        bookView.Doc(book => {
+            /// ... previous code
+        })
+    )
+
+And then we can put an `if` statement inside the anonymous function passed to `Books.View.DocSeqCached`
 to display the element in edit mode when needed:
 
-    Books.View.DocSeqCached((Book book) =>
-    {
-        if (book.IsEdited)
-        {
-            var editTitle = Var.Create(book.Title); // new Vars for editing details
-            var editAuthor = Var.Create(book.Author);
-            var f = Var.Create(DateToString(book.PublishDate));
-            var editISBN = Var.Create(book.ISBN);
-            return new emplate.Index.EditListItem()
-                .Title(editTitle)
-                .Author(editAuthor)
-                .PublishDate(editPublishDate)
-                .ISBN(editISBN)
-                .Update(async (el, ev) =>
-                {
-                    book.Title = editTitle.Value;
-                    book.Author = editAuthor.Value;
-                    book.PublishDate = DateTime.Parse(editPublishDate.Value);
-                    book.ISBN = editISBN.Value;
-                    book.IsEdited = false;
-                    var res = await Remoting.UpdateBook(book);
-                    if (res)
+    Books.View.DocSeqCached((View<Book> bookView) =>
+        bookView.Doc(book => {
+            if (book.IsEdited)
+            {
+                var editTitle = Var.Create(book.Title); // new Vars for editing details
+                var editAuthor = Var.Create(book.Author);
+                var f = Var.Create(DateToString(book.PublishDate));
+                var editISBN = Var.Create(book.ISBN);
+                return new emplate.Index.EditListItem()
+                    .Title(editTitle)
+                    .Author(editAuthor)
+                    .PublishDate(editPublishDate)
+                    .ISBN(editISBN)
+                    .Update(async (el, ev) =>
                     {
+                        book.Title = editTitle.Value;
+                        book.Author = editAuthor.Value;
+                        book.PublishDate = DateTime.Parse(editPublishDate.Value);
+                        book.ISBN = editISBN.Value;
+                        book.IsEdited = false;
+                        var res = await Remoting.UpdateBook(book);
+                        if (res)
+                        {
+                            Books.Add(book);
+                            message.Value = $"Updated book '{book.Title}'";
+                        }
+                        else
+                        {
+                            Books.Remove(book);
+                            message.Value = $"Book '{book.Title}' has not been found, removed";
+                        }
+                    })
+                    .Cancel((el, ev) =>
+                    {
+                        book.IsEdited = false;
                         Books.Add(book);
-                        message.Value = $"Updated book '{book.Title}'";
-                    }
-                    else
-                    {
-                        Books.Remove(book);
-                        message.Value = $"Book '{book.Title}' has not been found, removed";
-                    }
-                })
-                .Cancel((el, ev) =>
-                {
-                    book.IsEdited = false;
-                    Books.Add(book);
-                })
-                .Doc();
-        }
-        else
-            return new Template.Index.ListItem()
-                // ... previous code
-                .Doc();
-    }),
+                    })
+                    .Doc();
+            }
+            else
+                return new Template.Index.ListItem()
+                    // ... previous code 
+                    .Doc();
+        })
+    )
 
 A new set of `Var`s are needed as backing for the input fields.
 These are created inside the anonymous function for `DocSeqCached` but outside
@@ -450,5 +461,5 @@ work for avoiding memory leaks.
 
 ## Summary
 
-You can find the entire project on [GitHub](https://github.com/websharper-samples/BookCollection) with an enhanced template using `Bootstrap`.
+You can find the entire project on [GitHub](https://github.com/websharper-samples/BookCollection) with an enhanced template.
 Client-side code is reorganized a bit, initializing item templates are separated into methods for readability.

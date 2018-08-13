@@ -252,6 +252,5 @@ paket-files/
 *.sln.iml
 
 # WebSharper generated
-/BookCollection/Scripts/WebSharper
 /BookCollection/Content
-*.g.cs
+/BookCollection/WebSharper.UI.Templates/

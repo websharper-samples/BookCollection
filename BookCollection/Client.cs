@@ -2,11 +2,9 @@ using System;
 using System.Threading.Tasks;
 using WebSharper;
 using WebSharper.JQuery;
-using WebSharper.UI.Next;
-using WebSharper.UI.Next.Client;
-using WebSharper.UI.Next.CSharp;
-using WebSharper.UI.Next.CSharp.Client;
-using static WebSharper.UI.Next.CSharp.Client.Html;
+using WebSharper.UI;
+using WebSharper.UI.Client;
+using static WebSharper.UI.Client.Html;
 
 namespace BookCollection
 {
@@ -24,7 +22,7 @@ namespace BookCollection
         static string DateToString(DateTime date) =>
             $"{date.Year}-{date.Month.ToString().PadLeft(2, '0')}-{date.Day.ToString().PadLeft(2, '0')}";
 
-        static WebSharper.UI.Next.Doc DisplayBookDoc(Book book)
+        static WebSharper.UI.Doc DisplayBookDoc(Book book)
         {
             return new Template.Index.ListItem()
                 .Title(book.Title)
@@ -49,7 +47,7 @@ namespace BookCollection
                 .Doc();
         }
 
-        static WebSharper.UI.Next.Doc EditBookDoc(Book book)
+        static WebSharper.UI.Doc EditBookDoc(Book book)
         {
             var editTitle = Var.Create(book.Title); // new Vars for editing details
             var editAuthor = Var.Create(book.Author);

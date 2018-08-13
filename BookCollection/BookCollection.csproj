@@ -41,7 +41,7 @@
     <Name>BookCollection</Name>
     <RootNamespace>BookCollection</RootNamespace>
     <AssemblyName>BookCollection</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <ItemGroup>

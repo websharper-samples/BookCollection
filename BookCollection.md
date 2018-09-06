@@ -410,9 +410,9 @@ to display the element in edit mode when needed:
             {
                 var editTitle = Var.Create(book.Title); // new Vars for editing details
                 var editAuthor = Var.Create(book.Author);
-                var f = Var.Create(DateToString(book.PublishDate));
+                var editPublishDate = Var.Create(DateToString(book.PublishDate));
                 var editISBN = Var.Create(book.ISBN);
-                return new emplate.Index.EditListItem()
+                return new Template.Index.EditListItem()
                     .Title(editTitle)
                     .Author(editAuthor)
                     .PublishDate(editPublishDate)
